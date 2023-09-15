@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Chart } from 'chart.js';
 import { ChartModule } from 'primeng/chart';
 import { SkeletonModule } from 'primeng/skeleton';
 import { combineLatest, forkJoin, tap } from 'rxjs';
 import { ChartComponent } from '../shared/components/chart/chart.component';
 import { StatsComponent } from '../shared/components/stats/stats.component';
+import { Charts } from './interfaces/charts.interface';
 import { LastEightDay } from './interfaces/last-eight-day.interface';
 import { PayTypes } from './interfaces/pay-types.interface';
 import { DashboardChartService } from './services/dashboard-chart.service';
@@ -25,12 +27,7 @@ export class DashboardComponent implements OnInit {
   public payTypesData: PayTypes[] = [];
 
   // Charts
-  public countChartData!: any;
-  public countChartOptions!: any;
-  public saleChartData!: any;
-  public saleChartOptions!: any;
-  public payTypesChartData!: any;
-  public payTypesChartOptions!: any;
+  public charts: Charts = {};
 
   constructor(private dashboardService: DashboardService, private dashboardChartService: DashboardChartService) {
   }
@@ -44,19 +41,25 @@ export class DashboardComponent implements OnInit {
       payTypesData: this.dashboardService.payTypesData(),
     }).pipe(
       tap((value) => {
-        const {data: countData, options: countOptions} = this.dashboardChartService.prepareCountChart(value.lastEightDayData);
-        this.countChartData = countData;
-        this.countChartOptions = countOptions;
+        const {data, options} = this.dashboardChartService.prepareCountChart(value.lastEightDayData);
+        this.charts['countChart'] = {
+          data,
+          options
+        }
       }),
       tap((value) => {
-        const {data: saleData, options: saleOptions} = this.dashboardChartService.prepareSaleChart(value.lastEightDayData);
-        this.saleChartData = saleData;
-        this.saleChartOptions = saleOptions;
+        const {data, options} = this.dashboardChartService.prepareSaleChart(value.lastEightDayData);
+        this.charts['saleChart'] = {
+          data,
+          options
+        }
       }),
       tap((value) => {
-        const {data: payTypesData, options: payTypesOptions} = this.dashboardChartService.preparePayTypesChart(value.payTypesData);
-        this.payTypesChartData = payTypesData;
-        this.payTypesChartOptions = payTypesOptions;
+        const {data, options} = this.dashboardChartService.preparePayTypesChart(value.payTypesData);
+        this.charts['payTypesChart'] = {
+          data,
+          options
+        }
       })
     ).subscribe(response => {
       this.todayData = response.todayData

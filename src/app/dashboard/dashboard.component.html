@@ -4,16 +4,8 @@
 </app-stats>
 
 <div class="grid pt-3">
-  <div class="col-6">
-      <app-chart [data]="saleChartData" [options]="saleChartOptions"></app-chart>
-  </div>
-
-  <div class="col-6">
-      <app-chart [data]="countChartData" [options]="countChartOptions"></app-chart>
-  </div>
-
-  <div class="col-6">
-    <app-chart [data]="payTypesChartData" [options]="payTypesChartOptions"></app-chart>
+  <div *ngFor="let chart of charts | keyvalue" class="col-6">
+      <app-chart [data]="charts[chart.key].data" [options]="charts[chart.key].options"></app-chart>
   </div>
 </div>
 
