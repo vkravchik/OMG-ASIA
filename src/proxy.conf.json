@@ -1,0 +1,11 @@
+{
+  "/api/*": {
+    "target": "http://ourvend.com:83",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "logLevel": "debug",
+    "changeOrigin": false
+  }
+}
