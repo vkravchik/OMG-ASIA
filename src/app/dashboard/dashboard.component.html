@@ -1,11 +1,11 @@
-<app-stats [todayData]="+todayData"
-           [yesterdayData]="+yesterdayData"
-           [monthData]="+monthData">
+<app-stats [firstData]="todayData"
+           [secondData]="yesterdayData"
+           [thirdData]="monthData">
 </app-stats>
 
 <div class="grid pt-3">
   <div *ngFor="let chart of charts | keyvalue" class="col-6">
-      <app-chart [data]="charts[chart.key].data" [options]="charts[chart.key].options"></app-chart>
+      <app-chart [type]="charts[chart.key].type" [data]="charts[chart.key].data" [options]="charts[chart.key].options"></app-chart>
   </div>
 </div>
 

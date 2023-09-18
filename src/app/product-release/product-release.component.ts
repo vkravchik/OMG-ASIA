@@ -29,12 +29,11 @@ export class ProductReleaseComponent implements OnInit {
 
   public machineGrouping!: MachineGroups;
   public machineID!: MachineIds;
-  public rangeDates: Date[] = [new Date('2023-09-05T00:00:00'), new Date()];
+  public rangeDates: Date[] = [new Date(), new Date()];
+  // public rangeDates: Date[] = [new Date('2023-09-05T00:00:00'), new Date()];
 
   public data!: ProductReleaseInfo;
   public slotInfo!: SlotInfoDictionary;
-
-  public loading: boolean = true;
 
   constructor(private equipmentService: EquipmentService,
               private productReleaseService: ProductReleaseService,
@@ -73,7 +72,6 @@ export class ProductReleaseComponent implements OnInit {
   }
 
   public getProductReleases(): void {
-    this.loading = true;
 
     this.productReleaseService.getProductRelease({
       _search: false,
@@ -90,10 +88,7 @@ export class ProductReleaseComponent implements OnInit {
       PayType: '',
       Type: '',
       CommodityName: ''
-    }).subscribe({
-      next: data => this.data = data,
-      complete: () => this.loading = false
-    })
+    }).subscribe(data => this.data = data)
   }
 
   private getSlotInfo(): void {

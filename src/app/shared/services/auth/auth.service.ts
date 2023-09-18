@@ -13,7 +13,8 @@ export class AuthService {
     headers: new HttpHeaders({
       'Accept': 'text/html, text/plain application/xhtml+xml, */*',
       'Content-Type': 'application/x-www-form-urlencoded, charset=UTF-8',
-      'X-Requested-With': 'XMLHttpRequest'
+      'X-Requested-With': 'XMLHttpRequest',
+      'Access-Control-Allow-Origin': '*'
     }),
     responseType: 'text',
     withCredentials: true

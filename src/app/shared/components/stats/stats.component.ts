@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
+import { Stats } from './stats.interface';
 
 @Component({
   selector: 'app-stats',
@@ -10,9 +11,9 @@ import { SkeletonModule } from 'primeng/skeleton';
   styleUrls: ['./stats.component.scss']
 })
 export class StatsComponent {
-  @Input() todayData: number = 0;
-  @Input() yesterdayData: number = 0;
-  @Input() monthData: number = 0;
+  @Input() firstData!: Stats;
+  @Input() secondData!: Stats;
+  @Input() thirdData!: Stats;
 
   constructor() {
   }

@@ -13,5 +13,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 export class ChartComponent {
   @Input() data: any;
   @Input() options: any;
+  @Input() type: any;
 
 }

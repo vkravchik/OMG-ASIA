@@ -5,6 +5,7 @@ import { PayTypes } from '../interfaces/pay-types.interface';
 export interface ChartConfig {
   data: any;
   options: any;
+  type: any;
 }
 
 @Injectable({
@@ -68,7 +69,8 @@ export class DashboardChartService {
 
     return {
       data,
-      options
+      options,
+      type: 'line'
     }
   }
 
@@ -82,7 +84,6 @@ export class DashboardChartService {
       labels: input.map((item) => new Date(+item.PTime).toDateString()),
       datasets: [
         {
-          type: 'bar',
           label: 'Продажі',
           data: input.map((item) => item.TotalAmount),
           backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)'],
@@ -125,41 +126,42 @@ export class DashboardChartService {
 
     return {
       data,
-      options
+      options,
+      type: 'bar'
     }
   }
 
   preparePayTypesChart(input: PayTypes[]): ChartConfig {
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
 
     const data = {
       labels: input.map((item) => item.PayName),
       datasets: [
         {
-          type: 'pie',
-          label: 'Тип оплати',
           data: input.map((item) => item.TotalCount),
-          backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--yellow-500'), documentStyle.getPropertyValue('--green-500')],
-          hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--yellow-400'), documentStyle.getPropertyValue('--green-400')]
+          backgroundColor: [documentStyle.getPropertyValue('--blue-500'), documentStyle.getPropertyValue('--orange-300'), documentStyle.getPropertyValue('--green-500')],
+          hoverBackgroundColor: [documentStyle.getPropertyValue('--blue-400'), documentStyle.getPropertyValue('--orange-200'), documentStyle.getPropertyValue('--green-400')]
         }
       ]
     };
 
     const options = {
-      plugins: {
+      responsive: true,
+        plugins: {
         legend: {
-          labels: {
-            usePointStyle: true,
-            color: textColor
-          }
+          position: 'top',
+        },
+        title: {
+          display: true,
+            text: 'Оплата / Подарунок'
         }
       }
     };
 
     return {
       data,
-      options
+      options,
+      type: 'pie'
     }
   }
 }

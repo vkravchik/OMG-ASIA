@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Chart } from 'chart.js';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { SkeletonModule } from 'primeng/skeleton';
-import { combineLatest, forkJoin, tap } from 'rxjs';
+import { combineLatest, tap } from 'rxjs';
 import { ChartComponent } from '../shared/components/chart/chart.component';
 import { StatsComponent } from '../shared/components/stats/stats.component';
+import { Stats } from '../shared/components/stats/stats.interface';
 import { Charts } from './interfaces/charts.interface';
 import { LastEightDay } from './interfaces/last-eight-day.interface';
 import { PayTypes } from './interfaces/pay-types.interface';
@@ -16,20 +16,22 @@ import { DashboardService } from './services/dashboard.service';
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, StatsComponent, ChartModule, ChartComponent, SkeletonModule],
+  providers: [CurrencyPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  public todayData: string = 'None';
-  public yesterdayData: string = 'None';
-  public monthData: string = 'None';
+  public todayData!: Stats;
+  public yesterdayData!: Stats;
+  public monthData!: Stats;
+
   public lastEightDayData: LastEightDay[] = [];
   public payTypesData: PayTypes[] = [];
 
   // Charts
   public charts: Charts = {};
 
-  constructor(private dashboardService: DashboardService, private dashboardChartService: DashboardChartService) {
+  constructor(private currency: CurrencyPipe, private dashboardService: DashboardService, private dashboardChartService: DashboardChartService) {
   }
 
   ngOnInit() {
@@ -41,30 +43,46 @@ export class DashboardComponent implements OnInit {
       payTypesData: this.dashboardService.payTypesData(),
     }).pipe(
       tap((value) => {
-        const {data, options} = this.dashboardChartService.prepareCountChart(value.lastEightDayData);
+        const {data, options, type} = this.dashboardChartService.prepareCountChart(value.lastEightDayData);
         this.charts['countChart'] = {
           data,
-          options
+          options,
+          type
         }
       }),
       tap((value) => {
-        const {data, options} = this.dashboardChartService.prepareSaleChart(value.lastEightDayData);
+        const {data, options, type} = this.dashboardChartService.prepareSaleChart(value.lastEightDayData);
         this.charts['saleChart'] = {
           data,
-          options
+          options,
+          type
         }
       }),
       tap((value) => {
-        const {data, options} = this.dashboardChartService.preparePayTypesChart(value.payTypesData);
+        const {data, options, type} = this.dashboardChartService.preparePayTypesChart(value.payTypesData);
         this.charts['payTypesChart'] = {
           data,
-          options
+          options,
+          type
         }
       })
     ).subscribe(response => {
-      this.todayData = response.todayData
-      this.yesterdayData = response.yesterdayData
-      this.monthData = response.monthData
+      this.todayData = {
+        value: this.currency.transform(response.todayData, '₴') || '',
+        text: `Today's revenue`,
+        icon: 'pi pi-shopping-cart text-blue-500 text-xl'
+      };
+      this.yesterdayData = {
+        value: this.currency.transform(response.yesterdayData, '₴') || '',
+        text: `Yesterday's revenue`,
+        icon: 'pi pi-shopping-cart text-blue-500 text-xl'
+      };
+      this.monthData = {
+        value: this.currency.transform(response.monthData, '₴') || '',
+        text: `Revenue of the month`,
+        icon: 'pi pi-shopping-cart text-blue-500 text-xl'
+      };
+
       this.lastEightDayData = response.lastEightDayData;
       this.payTypesData = response.payTypesData;
     });

@@ -1,14 +1,14 @@
 <div class="px-4 py-5 md:px-6 lg:px-8" [style]="{backgroundColor: 'var(--surface-b)'}">
   <div class="grid">
     <div class="col-12 md:col-6 lg:col-4">
-      <div *ngIf="todayData; else todayDataSkeleton" class="surface-card shadow-2 p-3 border-round">
+      <div *ngIf="firstData; else todayDataSkeleton" class="surface-card shadow-2 p-3 border-round">
         <div class="flex justify-content-between mb-3">
           <div>
-            <span class="block text-500 font-medium mb-3">Сьогоднішній дохід</span>
-            <div class="text-900 font-medium text-xl">{{todayData | currency:'₴ '}}</div>
+            <span class="block text-500 font-medium mb-3">{{ firstData.text }}</span>
+            <div class="text-900 font-medium text-xl">{{ firstData.value }}</div>
           </div>
           <div class="flex align-items-center justify-content-center bg-blue-100 border-round" style="width:2.5rem;height:2.5rem">
-            <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+            <i class="{{ firstData.icon }}"></i>
           </div>
         </div>
         <span *ngIf="false" class="text-green-500 font-medium">24 new </span>
@@ -21,14 +21,14 @@
       </ng-template>
     </div>
     <div class="col-12 md:col-6 lg:col-4">
-      <div *ngIf="yesterdayData; else yesterdayDataSkeleton" class="surface-card shadow-2 p-3 border-round">
+      <div *ngIf="secondData; else yesterdayDataSkeleton" class="surface-card shadow-2 p-3 border-round">
         <div class="flex justify-content-between mb-3">
           <div>
-            <span class="block text-500 font-medium mb-3">Вчорашній дохід</span>
-            <div class="text-900 font-medium text-xl">{{yesterdayData | currency:'₴ '}}</div>
+            <span class="block text-500 font-medium mb-3">{{ secondData.text }}</span>
+            <div class="text-900 font-medium text-xl">{{ secondData.value }}</div>
           </div>
-          <div class="flex align-items-center justify-content-center bg-orange-100 border-round" style="width:2.5rem;height:2.5rem">
-            <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+          <div class="flex align-items-center justify-content-center bg-yellow-100 border-round" style="width:2.5rem;height:2.5rem">
+            <i class="{{ secondData.icon }}"></i>
           </div>
         </div>
         <span *ngIf="false" class="text-green-500 font-medium">%52+ </span>
@@ -41,14 +41,14 @@
       </ng-template>
     </div>
     <div class="col-12 md:col-6 lg:col-4">
-      <div *ngIf="monthData; else monthDataSkeleton" class="surface-card shadow-2 p-3 border-round">
+      <div *ngIf="thirdData; else monthDataSkeleton" class="surface-card shadow-2 p-3 border-round">
         <div class="flex justify-content-between mb-3">
           <div>
-            <span class="block text-500 font-medium mb-3">Дохід за місяць</span>
-            <div class="text-900 font-medium text-xl">{{monthData | currency:'₴ '}}</div>
+            <span class="block text-500 font-medium mb-3">{{ thirdData.text }}</span>
+            <div class="text-900 font-medium text-xl">{{ thirdData.value }}</div>
           </div>
-          <div class="flex align-items-center justify-content-center bg-cyan-100 border-round" style="width:2.5rem;height:2.5rem">
-            <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+          <div class="flex align-items-center justify-content-center bg-orange-200 border-round" style="width:2.5rem;height:2.5rem">
+            <i class="{{ thirdData.icon }}"></i>
           </div>
         </div>
         <span *ngIf="false" class="text-green-500 font-medium">520  </span>

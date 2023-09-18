@@ -5,4 +5,5 @@ export interface Charts {
 export interface Chart {
   data: any;
   options: any;
+  type: any;
 }

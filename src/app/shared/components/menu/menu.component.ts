@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { SharedModule } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
@@ -20,10 +21,17 @@ export class MenuComponent {
 
   @Output() onToggle: EventEmitter<boolean> = new EventEmitter();
 
+  constructor(private router: Router) {
+  }
+
   public toggleMenu(): void {
     this.isMenuVisible = !this.isMenuVisible;
 
     this.menuIcon = this.isMenuVisible ? 'pi pi-times' : 'pi pi-bars'
     this.onToggle.emit(this.isMenuVisible)
+  }
+
+  onAvatarClick() {
+    this.router.navigateByUrl('sign-in');
   }
 }

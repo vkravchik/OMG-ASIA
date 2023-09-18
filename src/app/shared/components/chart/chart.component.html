@@ -1,5 +1,5 @@
 <div class="card surface-card shadow-2 p-3">
-  <p-chart [height]="'320'" *ngIf="data && options; else chartSkeleton" type="line" [data]="data" [options]="options"></p-chart>
+  <p-chart [height]="'320'" *ngIf="data && options; else chartSkeleton" [type]="type" [data]="data" [options]="options"></p-chart>
 
   <!--   SKELETON   -->
   <ng-template #chartSkeleton>

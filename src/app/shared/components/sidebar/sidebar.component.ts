@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MenuItem, SharedModule } from 'primeng/api';
+import { MenuItem, PrimeIcons, SharedModule } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { SidebarModule } from 'primeng/sidebar';
 
@@ -21,11 +21,21 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.items = [
       {
-        label: 'File',
+        label: 'Dashboard',
+        icon: PrimeIcons.CHART_BAR,
+        routerLink: '/dashboard',
+        styleClass: 'p-menuitem-link-active',
+        command: () => {
+          this.onMenuHide();
+        }
       },
       {
-        label: 'Edit',
-        icon: 'pi pi-fw pi-pencil',
+        label: 'Product Release',
+        icon: PrimeIcons.SHOPPING_CART,
+        routerLink: '/product-release',
+        command: () => {
+          this.onMenuHide();
+        }
       }
     ];
   }
