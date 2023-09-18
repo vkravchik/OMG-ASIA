@@ -1,0 +1,10 @@
+<p-menubar>
+  <ng-template pTemplate="start">
+    <p-button [icon]="menuIcon" (onClick)="toggleMenu()" styleClass="p-button-rounded p-button-outlined"></p-button>
+    <img src="assets/logo.svg" alt="OMG Asia" height="40" class="ml-2 mr-2" />
+  </ng-template>
+  <ng-template pTemplate="end">
+    <p-avatar icon="pi pi-user" pBadge styleClass="mr-2" value="4"></p-avatar>
+  </ng-template>
+</p-menubar>
+<app-sidebar [isMenuVisible]="isMenuVisible" (onHideEvent)="toggleMenu()"></app-sidebar>

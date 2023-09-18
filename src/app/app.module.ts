@@ -97,6 +97,8 @@ import { BlockUIModule } from 'primeng/blockui';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AppRoutingModule } from './routing.module';
+import { MenuComponent } from './shared/components/menu/menu.component';
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { StatsComponent } from './shared/components/stats/stats.component';
 
@@ -203,7 +205,9 @@ import { StatsComponent } from './shared/components/stats/stats.component';
 
     SignInComponent,
     StatsComponent,
-    DashboardComponent
+    DashboardComponent,
+    MenuComponent,
+    SidebarComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

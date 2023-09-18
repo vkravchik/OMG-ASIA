@@ -1,54 +1,59 @@
-<div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+<div [style]="{backgroundColor: 'var(--surface-b)'}" class="px-4 py-5 md:px-6 lg:px-8">
   <div class="grid">
     <div class="col-4">
-      <p-dropdown (onChange)="onMachineGroupChange(machineGrouping)" [style]="{width: '100%'}" [options]="machineGroups" [(ngModel)]="machineGrouping" optionLabel="MGName"></p-dropdown>
+      <p-dropdown (onChange)="onMachineGroupChange(machineGrouping)" [style]="{width: '100%'}" [options]="machineGroups"
+                  [(ngModel)]="machineGrouping" optionLabel="MGName"></p-dropdown>
     </div>
 
     <div class="col-4">
-      <p-dropdown [style]="{width: '100%'}" [options]="machineIDs" [(ngModel)]="machineID" optionLabel="MiAlias"></p-dropdown>
+      <p-dropdown [style]="{width: '100%'}" [options]="machineIDs" [(ngModel)]="machineID"
+                  optionLabel="MiAlias"></p-dropdown>
     </div>
 
     <div class="col-4">
-      <p-calendar (onClose)="onDatesSelected(rangeDates)" [style]="{width: '100%'}" [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [showIcon]="true"></p-calendar>
-    </div>
-
-    <div class="col-4">
-      <p-button [style]="{width: '100%'}" icon="pi pi-search"></p-button>
-    </div>
-
-    <div class="col-4"></div>
-
-    <div class="col-4">
-      <p-button [style]="{width: '100%'}" icon="pi pi-download" styleClass="p-button-help"></p-button>
+      <p-calendar (onClose)="onDatesSelected(rangeDates)" [style]="{width: '100%'}" [(ngModel)]="rangeDates"
+                  selectionMode="range" [readonlyInput]="true" [showIcon]="true"></p-calendar>
     </div>
   </div>
 </div>
 
 <p-table
-  *ngIf="data"
+  *ngIf="data && slotInfo"
+  [loading]="loading"
   [value]="data.rows"
   [paginator]="true"
   [rows]="25"
-  [showCurrentPageReport]="true"
+  [totalRecords]="data.records"
   [tableStyle]="{ 'min-width': '50rem' }"
+  [rowsPerPageOptions]="[25, 50, 100, 300, 500]"
+  [showCurrentPageReport]="true"
+
   currentPageReportTemplate="Showing {first} to {last} of {{data.records}} entries"
-  [rowsPerPageOptions]="[25, 100, 500]"
-  (onPage)="onPageNavigated($event)"
 >
   <ng-template pTemplate="header">
     <tr>
-      <th style="width:5%">Index</th>
+      <th style="width:5%">№</th>
       <th style="width:5%">Slot</th>
+      <th style="width:15%">Image</th>
       <th style="width:25%">Name</th>
       <th style="width:5%">Price</th>
       <th style="width:10%">Result</th>
-      <th pSortableColumn="TrTime" style="width:25%">Time <p-sortIcon field="TrTime"></p-sortIcon></th>
+      <th pSortableColumn="TrTime" style="width:25%">Time
+        <p-sortIcon field="TrTime"></p-sortIcon>
+      </th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
     <tr>
-      <td>{{ rowIndex+1 }}</td>
+      <td>{{ rowIndex + 1 }}</td>
       <td>{{ product.TrCoilID }}</td>
+      <td><img
+        [id]="product.TrSerialNumber"
+        [src]="'https://ourvend-image.oss-cn-qingdao.aliyuncs.com/Regular/' + slotInfo[product.TrCoilID].PrImgUrl"
+        [alt]="product.PrName" width="100" class="shadow-4"
+        (load)="onImageLoaded($event)"
+      />
+      </td>
       <td>{{ product.PrName }}</td>
       <td>{{ product.TrSalePrice }}</td>
       <td>{{ product.TrResult | result }}</td>

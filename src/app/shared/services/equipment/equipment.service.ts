@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MachineGroups } from './machine-groups.interface';
-import { MachineIds } from './machine-ids.interface';
+import { MachineGroups } from './types/machine-groups.interface';
+import { MachineIds } from './types/machine-ids.interface';
 
 @Injectable({
   providedIn: 'root'

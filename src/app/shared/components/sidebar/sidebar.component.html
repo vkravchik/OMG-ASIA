@@ -1,0 +1,6 @@
+<p-sidebar [(visible)]="isMenuVisible" (onHide)="onMenuHide()" class="omg-sidebar">
+  <ng-template pTemplate="header">
+    <img src="assets/logo.svg" alt="OMG Asia" height="40" class="mr-2" />
+  </ng-template>
+  <p-menu [model]="items" [style]="{'width':'auto', 'border': 0}"></p-menu>
+</p-sidebar>

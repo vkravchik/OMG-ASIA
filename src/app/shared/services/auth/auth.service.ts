@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { AuthUser } from './user.interface';
+import { AuthUser } from './types/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +11,12 @@ export class AuthService {
 
   private httpOptions: any = {
     headers: new HttpHeaders({
-      'Accept': 'text/html, application/xhtml+xml, */*',
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Accept': 'text/html, text/plain application/xhtml+xml, */*',
+      'Content-Type': 'application/x-www-form-urlencoded, charset=UTF-8',
+      'X-Requested-With': 'XMLHttpRequest'
     }),
-    responseType: 'text'
+    responseType: 'text',
+    withCredentials: true
   };
 
   constructor(private http: HttpClient) { }

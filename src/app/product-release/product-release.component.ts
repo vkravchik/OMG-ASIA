@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import * as moment from 'moment';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { SkeletonModule } from 'primeng/skeleton';
-import { TableModule, TablePageEvent } from 'primeng/table';
+import { TableModule } from 'primeng/table';
+import { map } from 'rxjs';
 import { EquipmentService } from '../shared/services/equipment/equipment.service';
-import { MachineGroups } from '../shared/services/equipment/machine-groups.interface';
-import { MachineIds } from '../shared/services/equipment/machine-ids.interface';
+import { MachineGroups } from '../shared/services/equipment/types/machine-groups.interface';
+import { MachineIds } from '../shared/services/equipment/types/machine-ids.interface';
+import { SlotService } from '../shared/services/slot/slot.service';
+import { SlotInfoDictionary } from '../shared/services/slot/types/slot-info-dictionary.interface';
 import { ResultPipe } from './pipes/result.pipe';
 import { ProductReleaseInfo } from './product-release.interface';
 import { ProductReleaseService } from './services/product-release.service';
@@ -21,17 +24,21 @@ import { ProductReleaseService } from './services/product-release.service';
   styleUrls: ['./product-release.component.scss']
 })
 export class ProductReleaseComponent implements OnInit {
-  public machineGrouping!: MachineGroups;
   public machineGroups: MachineGroups[] = [];
-  public machineID!: MachineIds;
   public machineIDs: MachineIds[] = [];
+
+  public machineGrouping!: MachineGroups;
+  public machineID!: MachineIds;
   public rangeDates: Date[] = [new Date('2023-09-05T00:00:00'), new Date()];
+
   public data!: ProductReleaseInfo;
-  public numberOfRows: number = 100;
-  public currentPage: number = 1;
+  public slotInfo!: SlotInfoDictionary;
+
+  public loading: boolean = true;
 
   constructor(private equipmentService: EquipmentService,
-              private productReleaseService: ProductReleaseService) {
+              private productReleaseService: ProductReleaseService,
+              private slotService: SlotService) {
   }
 
   ngOnInit() {
@@ -54,22 +61,25 @@ export class ProductReleaseComponent implements OnInit {
       if (machineIDs.length === 1) {
         this.machineID = machineIDs[0];
 
+
+        this.getSlotInfo();
         this.getProductReleases();
       }
     });
   }
 
   onDatesSelected(rangeDates: Date[]) {
-    console.log(rangeDates);
     this.getProductReleases();
   }
 
-  getProductReleases(): void {
+  public getProductReleases(): void {
+    this.loading = true;
+
     this.productReleaseService.getProductRelease({
       _search: false,
       nd: 1694856405355,
-      rows: this.numberOfRows,
-      page: this.currentPage,
+      rows: 1000,
+      page: 1,
       sidx: 'TrTime',
       sord: 'asc',
       Group: this.machineGrouping.MGID,
@@ -80,15 +90,31 @@ export class ProductReleaseComponent implements OnInit {
       PayType: '',
       Type: '',
       CommodityName: ''
-    }).subscribe(data => {
-      this.data = data;
-      this.numberOfRows = data.records
+    }).subscribe({
+      next: data => this.data = data,
+      complete: () => this.loading = false
     })
   }
 
-  onPageNavigated($event: TablePageEvent) {
-    console.log($event);
-    this.currentPage = ($event.first/$event.rows) + 1;
-    // this.getProductReleases();
+  private getSlotInfo(): void {
+    this.slotService.getSlotInfo({
+      MachineID: this.machineID.MuMachineID
+    }).pipe(map(slotInfo => {
+      const slotInfoDictionary: SlotInfoDictionary = {};
+
+      slotInfo.forEach(item => {
+        slotInfoDictionary[item.SiCoilId] = {
+          ...item
+        }
+      });
+
+      return slotInfoDictionary;
+    })).subscribe((slotInfo) => {
+      this.slotInfo = slotInfo;
+    });
+  }
+
+  onImageLoaded(event: Event) {
+    console.log(event.target);
   }
 }
