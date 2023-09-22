@@ -24,7 +24,6 @@ export class SidebarComponent implements OnInit {
         label: 'Dashboard',
         icon: PrimeIcons.CHART_BAR,
         routerLink: '/dashboard',
-        styleClass: 'p-menuitem-link-active',
         command: () => {
           this.onMenuHide();
         }
@@ -36,7 +35,23 @@ export class SidebarComponent implements OnInit {
         command: () => {
           this.onMenuHide();
         }
-      }
+      },
+      {
+        label: 'Slot Info',
+        icon: PrimeIcons.TABLE,
+        routerLink: '/slot-info',
+        command: () => {
+          this.onMenuHide();
+        }
+      },
+      {
+        label: 'Replenishment Advice',
+        icon: PrimeIcons.REPLAY,
+        routerLink: '/replenishment-advice',
+        command: () => {
+          this.onMenuHide();
+        }
+      },
     ];
   }
 

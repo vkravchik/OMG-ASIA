@@ -1,70 +1,59 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import * as moment from 'moment';
+import { AvatarModule } from 'primeng/avatar';
+import { BadgeModule } from 'primeng/badge';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { map } from 'rxjs';
-import { EquipmentService } from '../shared/services/equipment/equipment.service';
+import { SearchToolbarComponent } from '../shared/components/search-toolbar/search-toolbar.component';
+import { StatsComponent } from '../shared/components/stats/stats.component';
 import { MachineGroups } from '../shared/services/equipment/types/machine-groups.interface';
 import { MachineIds } from '../shared/services/equipment/types/machine-ids.interface';
-import { SlotService } from '../shared/services/slot/slot.service';
-import { SlotInfoDictionary } from '../shared/services/slot/types/slot-info-dictionary.interface';
+import { SlotInfoService } from '../slot-info/services/slot-info.service';
+import { SlotInfoDictionary } from '../slot-info/types/slot-info-dictionary.interface';
 import { ResultPipe } from './pipes/result.pipe';
-import { ProductReleaseInfo } from './product-release.interface';
+import { Results } from './pipes/results.enum';
+import { ProductRelease, ProductReleaseData } from './product-release.interface';
 import { ProductReleaseService } from './services/product-release.service';
 
 @Component({
   selector: 'app-product-release',
   standalone: true,
-  imports: [CommonModule, SkeletonModule, DropdownModule, CalendarModule, FormsModule, TableModule, ResultPipe],
+  imports: [CommonModule, SkeletonModule, DropdownModule, CalendarModule, FormsModule, TableModule, ResultPipe, StatsComponent, BadgeModule, AvatarModule, SearchToolbarComponent],
   templateUrl: './product-release.component.html',
   styleUrls: ['./product-release.component.scss']
 })
 export class ProductReleaseComponent implements OnInit {
-  public machineGroups: MachineGroups[] = [];
-  public machineIDs: MachineIds[] = [];
-
   public machineGrouping!: MachineGroups;
   public machineID!: MachineIds;
   public rangeDates: Date[] = [new Date(), new Date()];
   // public rangeDates: Date[] = [new Date('2023-09-05T00:00:00'), new Date()];
 
-  public data!: ProductReleaseInfo;
+  public data!: ProductReleaseData;
   public slotInfo!: SlotInfoDictionary;
 
-  constructor(private equipmentService: EquipmentService,
-              private productReleaseService: ProductReleaseService,
-              private slotService: SlotService) {
+  public readonly Results = Results;
+
+  constructor(private productReleaseService: ProductReleaseService,
+              private slotInfoService: SlotInfoService) {
   }
 
   ngOnInit() {
-    this.equipmentService.getMachineGroups().subscribe((machineGroups) => {
-      this.machineGroups = machineGroups;
 
-      if (machineGroups.length === 1) {
-        this.machineGrouping = machineGroups[0];
-        this.onMachineGroupChange(this.machineGrouping);
-      }
-    });
   }
 
-  onMachineGroupChange(machineGrouping: MachineGroups) {
-    this.equipmentService.getMachineIDs({
-      MachineGroup: machineGrouping.MGID
-    }).subscribe((machineIDs) => {
-      this.machineIDs = machineIDs;
+  onMachineGroupSelected(machineGroup: MachineGroups): void {
+    this.machineGrouping = machineGroup;
+  }
 
-      if (machineIDs.length === 1) {
-        this.machineID = machineIDs[0];
-
-
-        this.getSlotInfo();
-        this.getProductReleases();
-      }
-    });
+  onMachineIDSelected(machineID: MachineIds): void {
+    this.machineID = machineID;
+    this.getSlotInfo();
+    this.getProductReleases();
   }
 
   onDatesSelected(rangeDates: Date[]) {
@@ -72,7 +61,6 @@ export class ProductReleaseComponent implements OnInit {
   }
 
   public getProductReleases(): void {
-
     this.productReleaseService.getProductRelease({
       _search: false,
       nd: 1694856405355,
@@ -92,7 +80,7 @@ export class ProductReleaseComponent implements OnInit {
   }
 
   private getSlotInfo(): void {
-    this.slotService.getSlotInfo({
+    this.slotInfoService.getSlotInfo({
       MachineID: this.machineID.MuMachineID
     }).pipe(map(slotInfo => {
       const slotInfoDictionary: SlotInfoDictionary = {};
@@ -109,7 +97,17 @@ export class ProductReleaseComponent implements OnInit {
     });
   }
 
-  onImageLoaded(event: Event) {
-    console.log(event.target);
+  getTotalCountByProductCode(productCode: string): string {
+    return this.data.rows.reduce((accum: number, item: ProductRelease): number => {
+      if (item.Prcode === productCode) {
+        return accum + 1;
+      }
+
+      return accum;
+    }, 0).toString();
+  }
+
+  toggleRow(expanded: boolean): boolean {
+    return expanded;
   }
 }

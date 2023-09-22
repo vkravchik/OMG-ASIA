@@ -1,0 +1,8 @@
+.omg {
+  &-group-header {
+    &:hover {
+      cursor: pointer;
+      background: var(--surface-100);
+    }
+  }
+}

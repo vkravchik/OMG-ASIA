@@ -1,64 +1,94 @@
-<div [style]="{backgroundColor: 'var(--surface-b)'}" class="px-4 py-5 md:px-6 lg:px-8">
-  <div class="grid">
-    <div class="col-4">
-      <p-dropdown (onChange)="onMachineGroupChange(machineGrouping)" [style]="{width: '100%'}" [options]="machineGroups"
-                  [(ngModel)]="machineGrouping" optionLabel="MGName"></p-dropdown>
-    </div>
-
-    <div class="col-4">
-      <p-dropdown [style]="{width: '100%'}" [options]="machineIDs" [(ngModel)]="machineID"
-                  optionLabel="MiAlias"></p-dropdown>
-    </div>
-
-    <div class="col-4">
-      <p-calendar (onClose)="onDatesSelected(rangeDates)" [style]="{width: '100%'}" [(ngModel)]="rangeDates"
-                  selectionMode="range" [readonlyInput]="true" [showIcon]="true"></p-calendar>
-    </div>
+<app-search-toolbar (onMachineGroupSelected)="onMachineGroupSelected($event)"
+                    (onMachineIDSelected)="onMachineIDSelected($event)">
+  <div class="col-4">
+    <p-calendar (onClose)="onDatesSelected(rangeDates)" [style]="{width: '100%'}" [(ngModel)]="rangeDates"
+                selectionMode="range" [readonlyInput]="true" [showIcon]="true"></p-calendar>
   </div>
-</div>
+</app-search-toolbar>
+
+<!--<app-stats [firstData]=""-->
+<!--           [secondData]=""-->
+<!--           [thirdData]="">-->
+
+<!--</app-stats>-->
 
 <p-table
   *ngIf="data && slotInfo"
   [value]="data.rows"
   [paginator]="true"
-  [rows]="25"
+  [rows]="50"
   [totalRecords]="data.records"
   [tableStyle]="{ 'min-width': '50rem' }"
   [rowsPerPageOptions]="[25, 50, 100, 300, 500]"
   [showCurrentPageReport]="true"
+  paginatorPosition="both"
+  dataKey="Prcode"
+  rowGroupMode="subheader"
+  groupRowsBy="Prcode"
 
   currentPageReportTemplate="Showing {first} to {last} of {{data.records}} entries"
 >
   <ng-template pTemplate="header">
     <tr>
       <th style="width:5%">№</th>
-      <th style="width:5%">Slot</th>
-      <th style="width:15%">Image</th>
+      <th style="width:5%" pSortableColumn="TrCoilID">
+        Slot
+        <p-sortIcon field="TrCoilID"></p-sortIcon>
+      </th>
       <th style="width:25%">Name</th>
       <th style="width:5%">Price</th>
       <th style="width:10%">Result</th>
-      <th pSortableColumn="TrTime" style="width:25%">Time
+      <th style="width:25%" pSortableColumn="TrTime">
+        Time
         <p-sortIcon field="TrTime"></p-sortIcon>
       </th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+
+  <ng-template pTemplate="groupheader" let-product let-expanded="expanded">
     <tr>
+      <td colspan="12" class="omg-group-header" [pRowToggler]="product">
+        <div class="flex align-items-center pr-2">
+          <button type="button"
+                  class="p-button-text p-button-rounded p-button-plain mr-2"
+                  pButton
+                  pRipple
+                  [pRowToggler]="toggleRow(expanded)"
+                  [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+          </button>
+          <p-avatar [image]="'https://ourvend-image.oss-cn-qingdao.aliyuncs.com/Regular/' + slotInfo[product.TrCoilID].PrImgUrl"
+                    pBadge
+                    [style]="{
+                      'width': '100px',
+                      'height': '100px',
+                    }"
+                    [value]="getTotalCountByProductCode(product.Prcode)"
+                    severity="info">
+          </p-avatar>
+          <img
+            *ngIf="false"
+            [src]="'https://ourvend-image.oss-cn-qingdao.aliyuncs.com/Regular/' + slotInfo[product.TrCoilID].PrImgUrl"
+            [alt]="product.PrName" width="100"
+          />
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="rowexpansion" let-product let-rowIndex="rowIndex">
+    <tr [ngClass]="{
+     'bg-blue-50': rowIndex % 2,
+     'bg-red-50': (product.TrResult | result) === Results.ERROR
+    }">
       <td>{{ rowIndex + 1 }}</td>
       <td>{{ product.TrCoilID }}</td>
-      <td><img
-        [id]="product.TrSerialNumber"
-        [src]="'https://ourvend-image.oss-cn-qingdao.aliyuncs.com/Regular/' + slotInfo[product.TrCoilID].PrImgUrl"
-        [alt]="product.PrName" width="100" class="shadow-4"
-        (load)="onImageLoaded($event)"
-      />
-      </td>
       <td>{{ product.PrName }}</td>
       <td>{{ product.TrSalePrice }}</td>
       <td>{{ product.TrResult | result }}</td>
       <td>{{ product.TrTime }}</td>
     </tr>
   </ng-template>
+
   <ng-template pTemplate="paginatorright">
     <p-button type="button" icon="pi pi-file-excel" styleClass="p-button-text"></p-button>
   </ng-template>

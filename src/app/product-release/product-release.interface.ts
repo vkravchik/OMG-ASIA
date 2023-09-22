@@ -1,4 +1,4 @@
-export interface ProductReleaseInfo {
+export interface ProductReleaseData {
   code: number,
   msg: string,
   page: number,

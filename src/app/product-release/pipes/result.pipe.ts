@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Results } from './results.enum';
 
 @Pipe({
   name: 'result',
@@ -8,10 +9,10 @@ export class ResultPipe implements PipeTransform {
 
   transform(value: unknown, ...args: unknown[]): string {
     if (value === "0") {
-      return "Normal"
+      return Results.NORMAL
     }
 
-    return "Error";
+    return Results.ERROR;
   }
 
 }

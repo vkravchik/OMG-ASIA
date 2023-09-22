@@ -2,7 +2,7 @@ import { LastEightDay } from '../../dashboard/interfaces/last-eight-day.interfac
 import { PayIDs, PayNames, PayTypes } from '../../dashboard/interfaces/pay-types.interface';
 
 export const ab2strMapper = (response: ArrayBuffer): number => {
-  return parseFloat((response as unknown as string).split('|')[0]);
+  return parseFloat((response as unknown as string).split('|')[0]) || 0;
 }
 
 export const lastEightDayDataMapper = (response: LastEightDay[]): LastEightDay[] => {

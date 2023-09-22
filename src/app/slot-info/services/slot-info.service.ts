@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SlotInfo } from './types/slot-info.interface';
+import { SlotInfo } from '../types/slot-info.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SlotService {
+export class SlotInfoService {
 
   constructor(private http: HttpClient) { }
 
